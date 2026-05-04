@@ -240,13 +240,19 @@ function decodeTopoJSON(topo) {
   const getArc = i => i < 0 ? [...arcs[~i]].reverse() : arcs[i];
   const decodeRing = indices => indices.flatMap(getArc);
 
-  return topo.objects.countries.geometries.map(geom => {
+  const features = topo.objects.countries.geometries.map(geom => {
     const meta = COUNTRIES[parseInt(geom.id, 10)];
     const coordinates = geom.type === 'Polygon'
       ? geom.arcs.map(decodeRing)
       : geom.arcs.map(poly => poly.map(decodeRing));
     return { id: geom.id, iso3: meta?.iso3 ?? null, name: meta?.name ?? null, type: geom.type, coordinates };
   });
+  const missing = features.filter(f => !f.iso3).map(f => f.id);
+  console.log('[topo] total features:', features.length, '| no-iso3:', missing.length, missing.slice(0,10));
+  const bra = features.find(f => f.iso3 === 'BRA');
+  if (bra) console.log('[topo] BRA type:', bra.type, '| coords length:', bra.coordinates.length, '| first ring length:', bra.type==='Polygon' ? bra.coordinates[0]?.length : bra.coordinates[0]?.[0]?.length);
+  else console.log('[topo] BRA not found in features');
+  return features;
 }
 
 // ── Centroid ───────────────────────────────────────────────────────────────────
@@ -620,6 +626,7 @@ function handleGuess(raw) {
   if (gameOver) return;
   const key = normalize(raw);
   const iso3 = nameMap[key];
+  console.log('[guess]', raw, '→ key:', key, '→ iso3:', iso3, '| guesses:', [...guesses], '| target:', targetIso3);
   if (!iso3) { setFeedback('not found — try a different spelling', 'error'); return; }
   if (guesses.has(iso3)) {
     setFeedback(`${iso3ToName[iso3]} — already guessed`, 'error');
@@ -630,6 +637,7 @@ function handleGuess(raw) {
 
   const c = centroids[iso3];
   const tgt = centroids[targetIso3];
+  console.log('[guess] centroid c:', c, '| tgt:', tgt);
   if (!c || !tgt) { setFeedback('not found — try a different spelling', 'error'); return; }
 
   guesses.add(iso3);
