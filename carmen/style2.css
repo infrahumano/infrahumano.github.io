@@ -1,0 +1,257 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: #0c0c0e;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 300;
+  color: #c8c8cc;
+  letter-spacing: 0.04em;
+}
+
+#globe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+#globe:active {
+  cursor: grabbing;
+}
+
+#loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7rem;
+  color: #333340;
+  letter-spacing: 0.2em;
+  text-transform: lowercase;
+  pointer-events: none;
+}
+
+#ui {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 52px;
+  pointer-events: none;
+}
+
+#counter {
+  position: fixed;
+  top: 32px;
+  right: 36px;
+  font-size: 0.7rem;
+  color: #3a3d4a;
+  letter-spacing: 0.12em;
+}
+
+#feedback {
+  font-size: 0.78rem;
+  color: #8a8a9a;
+  letter-spacing: 0.08em;
+  margin-bottom: 22px;
+  min-height: 1.2em;
+  text-align: center;
+  transition: color 0.3s;
+}
+
+#feedback.adjacent {
+  color: #c4955a;
+}
+
+#feedback.error {
+  color: #666070;
+}
+
+#form {
+  pointer-events: all;
+}
+
+#guess {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #32353f;
+  color: #b8b8c4;
+  font-size: 0.85rem;
+  font-family: inherit;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  width: 240px;
+  padding: 6px 0;
+  text-align: center;
+  outline: none;
+}
+
+#guess::placeholder {
+  color: #404252;
+}
+
+#guess:focus {
+  border-bottom-color: #505264;
+}
+
+#history {
+  position: fixed;
+  left: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  max-height: 62vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  pointer-events: none;
+}
+
+.h-item {
+  font-size: 0.68rem;
+  color: #80808e;
+  letter-spacing: 0.07em;
+  font-weight: 300;
+  opacity: 0;
+  white-space: nowrap;
+  animation: fadeitem 0.5s ease forwards;
+}
+
+@keyframes fadeitem {
+  from { opacity: 0; transform: translateX(-4px); }
+  to   { opacity: 0.45; transform: translateX(0); }
+}
+
+/* ── Mobile drawer ─────────────────────────────────────────────────────────── */
+#drawer { display: none; }
+
+@media (max-width: 600px) {
+  #history { display: none; }
+
+  #ui { z-index: 16; }
+
+  #drawer {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 52vh;
+    background: rgba(11, 11, 14, 0.95);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid #1c1f28;
+    border-radius: 14px 14px 0 0;
+    transform: translateY(calc(100% - 48px));
+    transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+    z-index: 14;
+  }
+
+  #drawer-handle {
+    flex-shrink: 0;
+    height: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  #drawer-pip {
+    width: 30px;
+    height: 3px;
+    background: #252833;
+    border-radius: 2px;
+  }
+
+  #drawer-peek {
+    font-size: 0.6rem;
+    color: #383a4c;
+    letter-spacing: 0.14em;
+  }
+
+  #drawer-list {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 6px 28px 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  #drawer-list .h-item {
+    font-size: 0.78rem;
+  }
+}
+
+#win {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+  z-index: 20;
+}
+
+#win-name {
+  font-size: 1.4rem;
+  color: #e0e0e8;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+
+#win-score {
+  font-size: 0.72rem;
+  color: #444454;
+  letter-spacing: 0.2em;
+  margin-top: 12px;
+}
+
+#play-again {
+  position: fixed;
+  bottom: 36px;
+  right: 36px;
+  display: none;
+  background: none;
+  border: 1px solid #3a3d50;
+  color: #7878a0;
+  font-family: inherit;
+  font-weight: 300;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  z-index: 30;
+}
+
+#play-again:hover {
+  border-color: #7878a0;
+  color: #b0b0cc;
+}
+
+#form {
+  transition: opacity 0.4s ease;
+}
