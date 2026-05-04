@@ -241,7 +241,7 @@ function decodeTopoJSON(topo) {
   const decodeRing = indices => indices.flatMap(getArc);
 
   return topo.objects.countries.geometries.map(geom => {
-    const meta = COUNTRIES[geom.id];
+    const meta = COUNTRIES[parseInt(geom.id, 10)];
     const coordinates = geom.type === 'Polygon'
       ? geom.arcs.map(decodeRing)
       : geom.arcs.map(poly => poly.map(decodeRing));
